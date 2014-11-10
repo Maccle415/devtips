@@ -85,6 +85,34 @@ dt.checkMissingClosingTags = function() {
 	// console.log(all[0]);
 }
 
+dt.checkInternalCSS = function () {
+	var styles = document.getElementsByTagName('style');
+
+	if (styles.length > 0) {
+		dt.warnings.push("Internal styling detected, styles should use external stylesheets");
+	}
+}
+
+dt.checkValidUL = function () {
+	var uls = document.getElementsByTagName('ul');
+	var ulClass = "";
+	var ulChildName = "";
+
+	for (ul in uls) {
+
+		ulClass = (uls[ul].className !== undefined && uls[ul].className !== "") ? uls[ul].className : "unknown";
+
+		for (child in uls[ul].children) {
+
+			ulChildName = uls[ul].children[child].tagName;
+
+			if (ulChildName != "LI" && ulChildName !== undefined) {
+				dt.warnings.push("Invalid UL child : " + uls[ul].children[child].tagName + " in class = " + ulClass);
+			}
+		}
+	}
+}
+
 dt.analyze = function() {
 
 	dt.checkH1Tag();
@@ -94,6 +122,8 @@ dt.analyze = function() {
 	dt.checkInlineStyling();
 	dt.checkImgAltAttr();
 	dt.checkMissingClosingTags();
+	dt.checkInternalCSS();
+	dt.checkValidUL();
 
 	// Console log all messages
 	if (dt.errors.length > 0) {
