@@ -93,24 +93,48 @@ dt.checkInternalCSS = function () {
 	}
 }
 
-dt.checkValidUL = function () {
-	var uls = document.getElementsByTagName('ul');
-	var ulClass = "";
-	var ulChildName = "";
+dt.checkValidListElements = function () {
+	var listElements = document.querySelectorAll('ul, ol');    
+	var listClass = "";
+	var listChildName = "";
 
-	for (ul in uls) {
+	for (listElement in listElements) {
 
-		ulClass = (uls[ul].className !== undefined && uls[ul].className !== "") ? uls[ul].className : "unknown";
+		listClass = (listElements[listElement].className !== undefined && listElements[listElement].className !== "") ? listElements[listElement].className : "unknown";
 
-		for (child in uls[ul].children) {
+		for (child in listElements[listElement].children) {
+            
+			listChildName = listElements[listElement].children[child].tagName;
 
-			ulChildName = uls[ul].children[child].tagName;
-
-			if (ulChildName != "LI" && ulChildName !== undefined) {
-				dt.warnings.push("Invalid UL child : " + uls[ul].children[child].tagName + " in class = " + ulClass);
+			if (listChildName != "LI" && listChildName !== undefined) {
+				dt.warnings.push("Invalid " + listElements[listElement].tagName + " child : " + listElements[listElement].children[child].tagName + " in class = " + listClass);
 			}
 		}
 	}
+}
+
+dt.checkValidSelect = function () {
+//    var selects = document.getElementsByTagName('select');
+//    var selectClass = "";
+//    var selectsChildName = "";
+//    
+//    console.log(selects[0].innerHTML);
+//    
+//    for (select in selects) {
+//        
+//        selectClass = (selects[select].className !== undefined && selects[select].className !== "") ? selects[select].className : "unknown";
+//        
+//        for (child in selects[select].children) {
+//            
+//            selectsChildName = selects[select].children[child].tagName;
+//            
+//            if (selectsChildName !== "OPTGROUP" && selectsChildName !== "OPTION" && selectsChildName !== undefined) {
+//                dt.warnings.push("Invalid Select child : " + selectsChildName + " in class = " + selectClass);
+//            } else {
+//                console.log("All good");
+//            }
+//        }
+//    }
 }
 
 dt.analyze = function() {
@@ -123,7 +147,8 @@ dt.analyze = function() {
 	dt.checkImgAltAttr();
 	dt.checkMissingClosingTags();
 	dt.checkInternalCSS();
-	dt.checkValidUL();
+	dt.checkValidListElements();
+    dt.checkValidSelect();
 
 	// Console log all messages
 	if (dt.errors.length > 0) {
